@@ -34,11 +34,14 @@ st.markdown("Upload an image and get fashion recommendations based on visual sim
 # Function to save uploaded file
 def save_uploaded_file(uploaded_file):
     try:
-        with open(os.path.join('uploads', uploaded_file.name), 'wb') as f:
+        file_path = os.path.join('uploads', uploaded_file.name)
+        with open(file_path, 'wb') as f:
             f.write(uploaded_file.getbuffer())
-        return 1
-    except:
-        return 0
+        print(f"File saved to {file_path}")
+        return file_path
+    except Exception as e:
+        print(f"Error saving file: {e}")
+        return None
 
 # Function to extract features from the image
 def feature_extraction(img_path, model):
@@ -61,27 +64,32 @@ def recommend(features, feature_list):
 uploaded_file = st.file_uploader("📁 Choose a fashion image to upload", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file is not None:
-    if save_uploaded_file(uploaded_file):
+    # Save the uploaded file and get its path
+    file_path = save_uploaded_file(uploaded_file)
+    
+    if file_path:
         # Display the uploaded image
-        display_image = Image.open(uploaded_file)
-        st.image(display_image, caption="Uploaded Image", use_column_width=True)
+        display_image = Image.open(file_path)
+        st.image(display_image, caption="Uploaded Image", use_container_width=True)
 
         # Extract features and recommend
-        features = feature_extraction(os.path.join("uploads", uploaded_file.name), model)
+        features = feature_extraction(file_path, model)
         indices = recommend(features, feature_list)
 
+        # Display recommended images
         st.subheader("🛍️ Recommended Items:")
         col1, col2, col3, col4, col5 = st.columns(5)
 
         with col1:
-            st.image(filenames[indices[0][0]])
+            st.image(filenames[indices[0][0]], caption="Recommended Image 1", use_container_width=True)
         with col2:
-            st.image(filenames[indices[0][1]])
+            st.image(filenames[indices[0][1]], caption="Recommended Image 2", use_container_width=True)
         with col3:
-            st.image(filenames[indices[0][2]])
+            st.image(filenames[indices[0][2]], caption="Recommended Image 3", use_container_width=True)
         with col4:
-            st.image(filenames[indices[0][3]])
+            st.image(filenames[indices[0][3]], caption="Recommended Image 4", use_container_width=True)
         with col5:
-            st.image(filenames[indices[0][4]])
+            st.image(filenames[indices[0][4]], caption="Recommended Image 5", use_container_width=True)
+
     else:
         st.error("⚠️ Error saving file. Please try again.")
