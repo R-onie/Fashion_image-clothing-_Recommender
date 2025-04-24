@@ -1,6 +1,5 @@
-streamlit==1.16.0
-tensorflow-gpu==2.10.0
-numpy==1.21.4
-pillow==8.4.0
-scikit-learn==1.0.1
-python-dotenv==0.19.2
+streamlit
+tensorflow
+numpy
+pillow
+scikit-learn
